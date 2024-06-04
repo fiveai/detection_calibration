@@ -1,5 +1,7 @@
 # On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines
 
+[![arXiv](https://img.shields.io/badge/arXiv-2405.20459-b31b1b.svg)](https://arxiv.org/abs/2405.20459)
+
 The official implementation of "On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines".
 
 > [**On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines**](https://arxiv.org/abs/2405.20459)            
