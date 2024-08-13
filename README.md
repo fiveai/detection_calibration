@@ -2,7 +2,7 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2405.20459-b31b1b.svg)](https://arxiv.org/abs/2405.20459)
 
-The official implementation of ECCV 2024 (Oral) work "On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines".
+The official implementation of "On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines". This work is accepted to **ECCV 2024 for an oral presentation**.
 
 > [**On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines**](https://arxiv.org/abs/2405.20459)            
 > Selim Kuzucu\*, Kemal Oksuz\*, Jonathan Sadeghi, Puneet K. Dokania
