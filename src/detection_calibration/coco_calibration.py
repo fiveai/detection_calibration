@@ -605,6 +605,10 @@ class CalibrationCOCO(COCOeval):
         calibration_eval.compute_single_errors()
         LaECE_0 = calibration_eval.accumulate_errors()
 
+        # Plot the reliability diagram when asked
+        if show_plot:
+            calibration_eval.plot_reliability_diagram(LaECE_0, cl=-1, fontsize=22)
+
         # The final True is for the LaACE option, as it does not require an explicit set of binning
         calibration_eval = CalibrationCOCO(self.test_annotations, self.test_annotations,
                                            self.eval_type, self.bin_count, self.tau, False, True, self.params.maxDets[0])
@@ -616,10 +620,6 @@ class CalibrationCOCO(COCOeval):
         calibration_eval.compute_single_errors()
         calibration_eval.compute_LRP()
         LaACE_0 = calibration_eval.accumulate_errors()
-
-        # Plot the reliability diagram when asked
-        if show_plot:
-            calibration_eval.plot_reliability_diagram(LaECE_0, cl=-1, fontsize=22)
 
         print()
         print('--------------------------ACCURACY-------------------------')
