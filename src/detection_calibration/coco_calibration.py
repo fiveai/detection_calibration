@@ -617,6 +617,10 @@ class CalibrationCOCO(COCOeval):
         calibration_eval.compute_LRP()
         LaACE_0 = calibration_eval.accumulate_errors()
 
+        # Plot the reliability diagram when asked
+        if show_plot:
+            calibration_eval.plot_reliability_diagram(LaECE_0, cl=-1, fontsize=22)
+
         print()
         print('--------------------------ACCURACY-------------------------')
         print(
@@ -660,9 +664,5 @@ class CalibrationCOCO(COCOeval):
         if verbose:
             COCO_evaluation(self.test_annotations,
                             calibrated_test_detections, self.eval_type)
-
-        # show_plot reliability diagrams only supports LaECE_0
-        if show_plot:
-            self.plot_reliability_diagram(LaECE_0, cl=-1, fontsize=22)
 
         return
