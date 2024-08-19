@@ -442,7 +442,7 @@ class CalibrationCOCO(COCOeval):
         # labels and legend
         plt.xlabel('Confidence', fontsize=fontsize+7)
         plt.legend(loc='upper left', framealpha=1.0, fontsize=fontsize-1)
-        plt.text(0.05, 0.63, '$\mathrm{ECE}_0$= %.1f%%' % (
+        plt.text(0.05, 0.63, '$\mathrm{LaECE}_0$= %.1f%%' % (
             ECE * 100), fontsize=fontsize-1)
         plt.xticks(fontsize=fontsize)
         plt.yticks(fontsize=fontsize)
