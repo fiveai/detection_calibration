@@ -208,13 +208,11 @@ Please refer to docstrings in the code to see the additional functionality of th
 Please cite the paper if you benefit from our paper or the repository:
 
 ```
-@misc{kuzucu2024calibration,
+@inproceedings{kuzucu2024calibration,
       title={On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines}, 
       author={Selim Kuzucu and Kemal Oksuz and Jonathan Sadeghi and Puneet K. Dokania},
-      year={2024},
-      eprint={2405.20459},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+      booktitle = {The European Conference on Computer Vision (ECCV)},
+      year = {2024}
 }
 ```
 
