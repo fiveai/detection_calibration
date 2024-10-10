@@ -285,7 +285,7 @@ def linear_regression(classagnostic, calibration_info, is_dece=False):
             model[cl] = LinearRegression(positive=True).fit(
                 valid_scores, valid_labels)
 
-        return model
+    return model
 
 
 def platt_scaling(classagnostic, calibration_info, is_dece=False, use_grid_search=False, use_quality_focal_loss=False):

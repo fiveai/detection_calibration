@@ -198,7 +198,7 @@ class PlattScaling(nn.Module):
         shift = self.shift.expand(logits.size())
         logits += shift
 
-        return np.array(torch.sigmoid(logits).item())
+        return torch.sigmoid(logits).detach().numpy()
 
 
 class TemperatureScaling(nn.Module):
@@ -359,6 +359,6 @@ class TemperatureScaling(nn.Module):
         temp = self.temperature.expand(logits.size())
         logits /= torch.abs(temp)
 
-        return np.array(torch.sigmoid(logits).item())
+        return torch.sigmoid(logits).detach().numpy()
 
 # Thanks to https://github.com/gpleiss/temperature_scaling/
