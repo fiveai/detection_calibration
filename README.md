@@ -28,77 +28,36 @@ Building calibrated object detectors is a crucial challenge to address for their
 
 More particularly, for the evaluation purpose, our benchmark considers the Localization-Recall-Precision (LRP) Error [1] as the primary accuracy measure and Localization-aware ECE (LaECE) [2] as the primary calibration error measure, while also providing support for the well-known AP [3] for measuring accuracy and D-ECE [4] for measuring calibration. As for the calibration purpose, our repository supports (i) Temperature Scaling [5], (ii) Platt Scaling [6], (iii) Linear Regression, (iv) Isotonic Regression [7].
 
-## 1. Installations and Preparations
+## Installations and Preparations
 
 ### Installing the detection_calibration Library
 
-Running the following command will install the library with the relevant requirements:
-
+You can pip install the repository and use it as a dependency:
 ```
 pip install git+https://github.com/fiveai/detection_calibration
 ```
 
-### Preparing the Datasets
-
-As post-hoc calibration approaches are typically obtained a held-out validation set (which is different from the test set), we randomly split the validation sets of the datasets into two as *minival* and *minitest*. The annotation files for these splits of COCO [3], Cityscapes [8]  and LVIS v1.0 [9] datasets can be downloaded from [Google Drive](https://drive.google.com/drive/u/0/folders/1nuv1gr-C8LfkZSRUWaYOwwus_vQ0ZWhM). 
-
-### Additional Preparations
-
-First, create a `data` directory in the root of the directory. This should include the dataset-specific files such as the images and the annotations. To exemplify, for COCO dataset, one would have the following folder structure:
-
-```text
-data
-├── coco
-│   ├── annotations
-│   │   ├── calibration_val2017.json
-│   │   ├── calibration_test2017.json
-│   │   ├── instances_train2017.json
-│   │   ├── instances_val2017.json
-│   │   ├── ...
-│   ├── train2017
-│   │   ├── 118287 images
-│   ├── val2017
-│   │   ├── 5000 images
+Or alternatively, you can simply clone the repository and install the dependencies in the requirements first then run,
 ```
-
-Then, create a `detections` directory. This will include the json files of the relevant detectors for both the validation and test sets of the relevant datasets. Note that these detection files **must comply with COCO-style**. To exemplify, for D-DETR on Cityscapes and COCO, one would have the following folder structure:
-```text
-
-detections
-├── deformable_detr_cityscapes_minival.bbox.json
-├── deformable_detr_cityscapes_minitest.bbox.json
-├── deformable_detr_coco_minival.bbox.json
-├── deformable_detr_coco_minitest.bbox.json
-├── ...
+python setup.py develop
 ```
+to use the repository in the development mode.
 
-## 2. Evaluating and Calibrating Object Detectors
+### Preparing the Repository and the 
 
-### Overview
+As post-hoc calibration approaches are typically obtained a held-out validation set (which is different from the test set), we randomly split the validation sets of the datasets into two as *minival* and *minitest*. The annotation files (as well as some example detection files used in the tutorials) for these splits of COCO [3], Cityscapes [8]  and LVIS v1.0 [9] datasets can be downloaded from [Google Drive](https://drive.google.com/file/d/1cl-rHUOCsrkL8KyD_dPpgc4OHU2P9FFO/view?usp=sharing). Please unzip this zip file and place it under the root of this directory if you cloned this directory. If you installed this directory using pip, then please use our tutorials by setting the paths accordingly.
 
-This repository supports Temperature Scaling [5], Platt Scaling [6], Linear Regression and Isotonic Regression [7] post-hoc calibrators.
+## Tutorials to Calibrate and Evaluate Object Detectors
 
-### Common Objects, Autonomous Vehicles (and any other!) Benchmarks - Object Detection
+We provide two tutorials under `tutorials` directory:
+- autonomous_driving.py
+- common_objects.py
 
-```python
-from detection_calibration.DetectionCalibration import DetectionCalibration
+Common objects tutorial is more comprehensive and provide you different functionalities of our repository (the evaluation we propose, evaluation under domain shift, Detection-ECE style evaluation and the standard Average Precision). These tutorials will help you to reproduce some of our results in our paper. For both of the tutorials, we use detections from Deformable-DETR, which is also the main detector we employ in our paper. 
 
-# Initialize the main calibration class with the validation and test annotation files
-calibration_model = DetectionCalibration('data/<dataset_name>/validation.json', 'data/<dataset_name>/test.json')
-
-# Fit the specified calibrator to the validation set
-calibrator, thresholds = calibration_model.fit('detections/<model_name>_<dataset_name>_validation.bbox.json', \
-    calibrator_type='isotonic_regression')
-
-# Transform the evaluation set with the learned calibrator and the obtained thresholds
-cal_test_detections = calibration_model.transform('detections/<model_name>_<dataset_name>_test.bbox.json', \
-    calibrator, thresholds)
-
-# Output the final evaluation results for both accuracy and calibration
-calibration_model.evaluate_calibration(cal_test_detections)
-```
-
+We provide further details about the functionalities that are not covered in these tutorials in the following.
 ### Long-tailed Object Detection Benchmark (LVIS)
+We also have a plan to release a tutorial for the LVIS dataset. Before we release it, if you want to calibrate your models on LVIS dataset, please see the example below:
 
 ```python
 from detection_calibration.DetectionCalibration import DetectionCalibration
@@ -120,103 +79,13 @@ calibration_model.evaluate_calibration(cal_test_detections)
 ```
 ### Instance Segmentation
 
-Just ensure that the `DetectionCalibration` class is initialized with its `eval_type` argument set to `segm`, and the rest is exactly the same as above examples:
+We also support instance segmentation in addition to object detection. To evaluate an instance segmentation approach, you can follow our common objects tutorial by ensuring that `DetectionCalibration` is initialized with  `eval_type=segm`:
 
 ```python
 # Initialize the eval_type attribute with 'segm'
 calibration_model = DetectionCalibration('data/<dataset_name>/validation.json', 'data/<dataset_name>/test.json', eval_type='segm')
 ```
-
-### Evaluation Under Domain Shift
-
-It is sufficient to simply pass the relevant testing annotation file with its corresponding detections under COCO-style json files for any given detector. Note that the validation dataset, where the calibrator is learned, should remain the same for proper benchmarking. To exemplify, to evaluate a detector for Common Objects Benchmark under the domain shift dataset Obj45K, the following template can be followed:
-
-```python
-from detection_calibration.DetectionCalibration import DetectionCalibration
-
-# Initialize the main calibration class with COCO validation and Obj45K (test) annotation files
-calibration_model = DetectionCalibration('data/coco/calibration_val2017.json', 'data/coco/obj45k.json')
-
-# Fit the specified calibrator to the validation set
-calibrator, thresholds = calibration_model.fit('detections/<model_name>_coco_validation.bbox.json', \
-    calibrator_type='isotonic_regression')
-
-# Transform the Obj45K set with the learned calibrator and the obtained thresholds
-cal_test_detections = calibration_model.transform('detections/<model_name>_obj45k.bbox.json', \
-    calibrator, thresholds)
-
-# Output the final evaluation results for both accuracy and calibration
-calibration_model.evaluate_calibration(cal_test_detections)
-```
-
-An analogous case can also be exemplified for evaluating a Cityscapes-trained model under Foggy Cityscapes. This time, however, the test annotation file would remain the same as regular Cityscapes though the COCO-style detection json for the test set would change accordingly:
-
-```python
-from detection_calibration.DetectionCalibration import DetectionCalibration
-
-# Initialize the main calibration class with the validation and test annotation files of Cityscapes
-calibration_model = DetectionCalibration('data/cityscapes/instancesonly_filtered_gtFine_minival.json', \
-    'data/cityscapes/instancesonly_filtered_gtFine_minitest.json.json')
-
-# Fit the specified calibrator to the validation set
-calibrator, thresholds = calibration_model.fit('detections/<model_name>_cityscapes_validation.bbox.json', \
-    calibrator_type='isotonic_regression')
-
-# Perform transform on the detections of the Foggy Cityscapes dataset with the selected fog density
-cal_test_detections = calibration_model.transform('detections/<model_name>_<density>_foggy_cityscapes.bbox.json', \
-    calibrator, thresholds)
-
-# Output the final evaluation results for both accuracy and calibration
-calibration_model.evaluate_calibration(cal_test_detections)
-```
  
-## 3. Additional Features
-
-### Evaluating and Calibrating the Detectors For D-ECE
-
-For evaluation in terms of D-ECE after calibration with D-ECE-style targets (binary, based on TP/FP detections):
-
-```python
-from detection_calibration.DetectionCalibratoin import DetectionCalibration
-
-# Initialize the main calibration class with is_dece=True, bin_count=10 and IoU TP threshold tau=0.5
-calibration_model = DetectionCalibration('data/<dataset_name>/validation.json', 'data/<dataset_name>/', \
-    is_dece=True, tau=0.5, bin_count=10)
-
-# Fits the specified calibrator to the validation set, classagnostic with 0.3 thresholds for D-ECE
-calibrator, thresholds = calibration_model.fit('detections/<model_name>_<dataset_name>_validation.bbox.json', \
-    calibration_type='isotonic_regression', classagnostic=True, threshold_type=[0.3, 0.3])
-
-# Transform the evaluation set with the learned calibrator and the obtained thresholds
-cal_test_detections = calibration_model.transform('detections/<model_name>_<dataset_name>_test.bbox.json', \
-    calibrator, thresholds)
-
-# Set is_dece=True to observe D-ECE
-calibration_model.evaluate_calibration(cal_test_detections, is_dece=True)
-```
-
-### Evaluation with Average Precision (AP)
-
-To evaluate the benchmarks with AP and its components in terms of accuracy, simply setting the `verbose=True` while calling the `evaluate_calibration()` is sufficient:
-
-```python
-# Set verbose=True to observe AP with its components
-calibration_model.evaluate_calibration(cal_test_detections, verbose=True)
-```
-
-### Observing Reliability Diagrams
-
-Setting `show_plot` to `True` when calling `evaluate_calibration()` will plot and show the relevant reliability diagram:
-
-```python
-# Outputs the final evaluation results for both accuracy and calibration
-calibration_model.evaluate_calibration(cal_test_detections, show_plot=True)
-```
-
-### Other Features
-
-Please refer to docstrings in the code to see the additional functionality of this repository.
-
 ### References
 - [[1](https://arxiv.org/pdf/2011.10772.pdf)] One Metric to Measure them All: Localisation Recall Precision (LRP) for Evaluating Visual Detection Tasks, TPAMI in 2022 and ECCV 2018  
 - [[2](https://arxiv.org/abs/2307.00934)] Towards Building Self-Aware Object Detectors via Reliable Uncertainty Quantification and Calibration, CVPR 2023  
