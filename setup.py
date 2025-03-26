@@ -11,14 +11,8 @@ except Exception:
     long_description = ''
 
 
-#def filter_requirements_args(requirements):
-#    """Filter out arguments from a requirements list."""
-#    return [line for line in requirements if not line.strip().startswith("--") and len(line.strip()) > 0]
-
-
 with open(os.path.join(current_directory, "requirements.txt")) as fh:
     requirements = fh.readlines()
-    #requirements = filter_requirements_args(fh.readlines())
 
 setup(
     name='detection_calibration',

@@ -8,6 +8,20 @@ The official implementation of "On Calibration of Object Detectors: Pitfalls, Ev
 > Selim Kuzucu\*, Kemal Oksuz\*, Jonathan Sadeghi, Puneet K. Dokania
 > (\* Equal contribution for first authorship)
 
+
+## How to Cite
+
+Please cite the paper if you benefit from our paper or the repository:
+
+```
+@inproceedings{kuzucu2024calibration,
+      title={On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines}, 
+      author={Selim Kuzucu and Kemal Oksuz and Jonathan Sadeghi and Puneet K. Dokania},
+      booktitle = {The European Conference on Computer Vision (ECCV)},
+      year = {2024}
+}
+```
+
 ## Introduction
 
 Building calibrated object detectors is a crucial challenge to address for their reliable usage in safety-critical applications. To enable this functionality, in this repository we include the necessary tools for (i) calibrating object detectors using post-hoc approaches and (ii) evaluating them. Our toolset are designed specifically to respect to the practical usage of the object detectors. 
@@ -202,19 +216,6 @@ calibration_model.evaluate_calibration(cal_test_detections, show_plot=True)
 ### Other Features
 
 Please refer to docstrings in the code to see the additional functionality of this repository.
-
-## How to Cite
-
-Please cite the paper if you benefit from our paper or the repository:
-
-```
-@inproceedings{kuzucu2024calibration,
-      title={On Calibration of Object Detectors: Pitfalls, Evaluation and Baselines}, 
-      author={Selim Kuzucu and Kemal Oksuz and Jonathan Sadeghi and Puneet K. Dokania},
-      booktitle = {The European Conference on Computer Vision (ECCV)},
-      year = {2024}
-}
-```
 
 ### References
 - [[1](https://arxiv.org/pdf/2011.10772.pdf)] One Metric to Measure them All: Localisation Recall Precision (LRP) for Evaluating Visual Detection Tasks, TPAMI in 2022 and ECCV 2018  
