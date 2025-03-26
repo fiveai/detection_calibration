@@ -184,7 +184,7 @@ class PlattScaling(nn.Module):
         """
         Perform prediction on the confidences with the PS post-hoc calibrator
         :param confidences  (float array)  : confidence scores of the detections
-        :return: self
+        :return: float                     : calibrated confidence score (single value)
         """
 
         logits = torch.tensor(self.inverse_sigmoid(confidences))
@@ -198,7 +198,8 @@ class PlattScaling(nn.Module):
         shift = self.shift.expand(logits.size())
         logits += shift
 
-        return torch.sigmoid(logits).detach().numpy()
+        # fetch scalar value.
+        return torch.sigmoid(logits).detach().item()
 
 
 class TemperatureScaling(nn.Module):
@@ -348,7 +349,7 @@ class TemperatureScaling(nn.Module):
         """
         Perform prediction on the confidences with the TS post-hoc calibrator
         :param confidences  (float array)  : confidence scores of the detections
-        :return: self
+        :return: float                     : calibrated confidence score (single value)
         """
 
         logits = torch.tensor(self.inverse_sigmoid(confidences))
@@ -359,6 +360,7 @@ class TemperatureScaling(nn.Module):
         temp = self.temperature.expand(logits.size())
         logits /= torch.abs(temp)
 
-        return torch.sigmoid(logits).detach().numpy()
+        # fetch scalar value.
+        return torch.sigmoid(logits).detach().item()
 
 # Thanks to https://github.com/gpleiss/temperature_scaling/
